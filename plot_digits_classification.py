@@ -1,49 +1,26 @@
-import matplotlib.pyplot as plt
-
-from sklearn import datasets, metrics, svm
-from utils import split_train_dev_test, predict_and_eval
+from utils import predict_and_eval
+from utils import split_train_dev_test, get_data, preprocess_data, get_all_hyper_params, tune_hyper_parameter
 
 
-digits = datasets.load_digits()
+def main():
+    test_sizes = [0.1, 0.2, 0.3]
+    dev_sizes = [0.1, 0.2, 0.3]
+    for test_size in test_sizes:
+        for dev_size in dev_sizes:
+            train_size = "{:.2f}".format(1 - test_size - dev_size)
+            X, y = get_data()
+            X_train, X_dev, X_test, y_train, y_dev, y_test = split_train_dev_test(X, y, test_size, dev_size)
+            X_train = preprocess_data(X_train)
+            X_test = preprocess_data(X_test)
+            X_dev = preprocess_data(X_dev)
+            list_of_all_param_combination_dictionaries = get_all_hyper_params()
+            # print(list_of_all_param_combination_dictionaries)
+            best_hyper_params, best_model, best_accuracy = tune_hyper_parameter(X_train, y_train, X_dev, y_dev, list_of_all_param_combination_dictionaries)
+            test_accuracy = "{:.2f}".format(predict_and_eval(best_model, X_test, y_test))
+            dev_accuracy = "{:.2f}".format(best_accuracy)
+            train_accuracy = "{:.2f}".format(predict_and_eval(best_model, X_train, y_train))
+            print(f"Train Size {train_size} Test Size {test_size} Dev Size {dev_size} - Train accuracy : {train_accuracy} Test accuracy : {test_accuracy} Dev accuracy : {dev_accuracy}")
 
-_, axes = plt.subplots(nrows=1, ncols=4, figsize=(10, 3))
-for ax, image, label in zip(axes, digits.images, digits.target):
-    ax.set_axis_off()
-    ax.imshow(image, cmap=plt.cm.gray_r, interpolation="nearest")
-    ax.set_title("Training: %i" % label)
 
-# flatten the images
-n_samples = len(digits.images)
-data = digits.images.reshape((n_samples, -1))
-
-# Create a classifier: a support vector classifier
-clf = svm.SVC(gamma=0.001)
-
-# Use the split_train_dev_test function to split data into train, dev, and test subsets
-X_train, X_dev, X_test, y_train, y_dev, y_test = split_train_dev_test(
-    data, digits.target, test_size=0.5, dev_size=0.2
-)
-
-# Learn the digits on the train subset
-clf.fit(X_train, y_train)
-
-# Predict the value of the digit on the test subset
-predicted = clf.predict(X_test)
-
-disp = predict_and_eval(clf, X_test, y_test)
-# The ground truth and predicted lists
-y_true = []
-y_pred = []
-cm = disp.confusion_matrix
-
-# For each cell in the confusion matrix, add the corresponding ground truths
-# and predictions to the lists
-for gt in range(len(cm)):
-    for pred in range(len(cm)):
-        y_true += [gt] * cm[gt][pred]
-        y_pred += [pred] * cm[gt][pred]
-
-print(
-    "Classification report rebuilt from confusion matrix:\n"
-    f"{metrics.classification_report(y_true, y_pred)}\n"
-)
+if __name__ == "__main__":
+    main()
