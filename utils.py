@@ -8,10 +8,10 @@ def preprocess_data(data):
     data = data.reshape((n, -1))
     return data
 
-def get_all_hyper_params():
+def get_all_hyper_params(gamma_list, C_list):
     params = {
-        'gamma_ranges' : [0.081, 0.01, 0.1, 1, 10, 108],
-        'C_ranges' : [0.1, 1, 2, 5, 10]
+        'gamma_ranges' : gamma_list,
+        'C_ranges' : C_list
     }
     param_combinations = [{'gamma': gamma, 'C': C} for gamma in params['gamma_ranges'] for C in params['C_ranges']]
     return param_combinations
