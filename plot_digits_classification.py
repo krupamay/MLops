@@ -25,12 +25,16 @@ def main():
                                                                              list_hparam_combinations)
             # loading of model
             best_model = load(best_model_path)
-            test_accuracy = "{:.2f}".format(predict_and_eval(best_model, X_test, y_test))
-            dev_accuracy = "{:.2f}".format(best_accuracy)
-            train_accuracy = "{:.2f}".format(predict_and_eval(best_model, X_train, y_train))
-            print(
-                f"Train Size {train_size} Test Size {test_size} Dev Size {dev_size} - Train accuracy : {train_accuracy} Test accuracy : {test_accuracy} Dev accuracy : {dev_accuracy}")
-
+            print(f"Total samples in the train dataset {len(X_train)}")
+            print(f"Total samples in the test dataset {len(X_test)}")
+            print(f"Total samples in the dev dataset {len(X_dev)}")
+            image_height, image_width = X.shape[1], X.shape[2]
+            print(f"Height of image is {image_height} and width of the image is {image_width}")
+            gamma_list = [0.081, 0.01, 0.1, 1, 10, 108]
+            C_list = [0.1, 1, 2, 5, 10]
+            list_of_all_param_combination_dictionaries = get_all_hyper_params(gamma_list, C_list)
+            # print(list_of_all_param_combination_dictionaries)
+            best_hyper_params, best_model, best_accuracy = tune_hyper_parameter(X_train, y_train, X_dev, y_dev, list_of_all_param_combination_dictionaries)
 
 if __name__ == "__main__":
     main()

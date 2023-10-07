@@ -24,3 +24,5 @@ jobs:
         run: pytest
       - name: Execute main python file
         run: python plot_digits_classification.py
+      - name: Completion
+        run: echo "Python File execution completed"
