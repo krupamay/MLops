@@ -6,8 +6,7 @@ def test_for_hparam_combinations_count():
     # a test case to check that all possible combinations of parameters are indeed generated
     gamma_list = [0.001, 0.01, 0.1, 1]
     C_list = [1, 10, 100, 1000]
-    h_params = {'gamma': gamma_list, 'C': C_list}
-    h_params_combinations = get_hyperparameter_combinations(h_params)
+    h_params_combinations = get_hyperparameter_combinations([gamma_list, C_list], ['gamma', 'C'])
 
     assert len(h_params_combinations) == len(gamma_list) * len(C_list)
 
@@ -15,8 +14,7 @@ def test_for_hparam_combinations_count():
 def create_dummy_hyperparameter():
     gamma_list = [0.001, 0.01]
     C_list = [1]
-    h_params = {'gamma': gamma_list, 'C': C_list}
-    h_params_combinations = get_hyperparameter_combinations(h_params)
+    h_params_combinations = get_hyperparameter_combinations([gamma_list, C_list], ['gamma', 'C'])
     return h_params_combinations
 
 
@@ -47,8 +45,8 @@ def test_model_saving():
     X_train, y_train, X_dev, y_dev = create_dummy_data()
     h_params_combinations = create_dummy_hyperparameter()
 
-    _, best_model_path, _ = tune_hparams(X_train, y_train, X_dev,
-                                         y_dev, h_params_combinations)
+    _, best_model_path, _, _ = tune_hparams(X_train, y_train, X_dev,
+                                            y_dev, h_params_combinations, model_type='svm')
     assert os.path.exists(best_model_path)
 
 
