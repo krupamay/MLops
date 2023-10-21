@@ -1,6 +1,8 @@
-from sklearn import datasets, metrics, svm
+from sklearn import datasets, svm, metrics, tree
 from sklearn.model_selection import train_test_split
 from joblib import dump, load
+from sklearn.tree import DecisionTreeClassifier
+from itertools import product
 
 
 def preprocess_data(data):
@@ -10,9 +12,14 @@ def preprocess_data(data):
     return data
 
 
-def get_hyperparameter_combinations(params):
-    param_combinations = [{'gamma': gamma, 'C': C} for gamma in params['gamma'] for C in params['C']]
-    return param_combinations
+def get_hyperparameter_combinations(list_of_param, param_names):
+    list_of_param_combination = []
+    for each in list(product(*list_of_param)):
+        comb = {}
+        for i in range(len(list_of_param)):
+            comb[param_names[i]] = each[i]
+        list_of_param_combination.append(comb)
+    return list_of_param_combination
 
 
 def read_digits():
@@ -22,10 +29,21 @@ def read_digits():
     return X, y
 
 
-def train_model(x, y, model_params):
-    gamma = model_params['gamma']
-    C = model_params['C']
-    model = svm.SVC(kernel='rbf', gamma=gamma, C=C)
+def train_model(X_train, y_train, model_params, model_type):
+    if model_type == 'svm':
+        clf = svm.SVC
+    if model_type == 'tree':
+        clf = tree.DecisionTreeClassifier
+    model = clf(**model_params)
+    # print(model_params)
+    model.fit(X_train, y_train)
+    return model
+
+
+def train_model_decision_tree(x, y, model_params):
+    max_depth = model_params.get('max_depth', None)
+    min_samples_split = model_params.get('min_samples_split', 2)
+    model = DecisionTreeClassifier(max_depth=max_depth, min_samples_split=min_samples_split)
     model.fit(x, y)
     return model
 
@@ -52,18 +70,16 @@ def predict_and_eval(model, X_test, y_test):
     return accuracy
 
 
-def tune_hparams(X_train, y_train, X_dev, y_dev, param_combinations):
+def tune_hparams(X_train, y_train, X_dev, y_dev, param_combinations, model_type):
     best_accuracy = -1
     best_model_path = ""
     best_model = None
     best_hparams = None
     for params in param_combinations:
         # Train model with current hyperparameters
-        cur_model = train_model(X_train, y_train, params)
-
+        cur_model = train_model(X_train, y_train, model_params=params, model_type=model_type)
         # Evaluate the model on the development set
         cur_accuracy = predict_and_eval(cur_model, X_dev, y_dev)
-
         # Select the hyperparameters that yield the best performance on DEV set
         if cur_accuracy > best_accuracy:
             best_accuracy = cur_accuracy
@@ -75,4 +91,4 @@ def tune_hparams(X_train, y_train, X_dev, y_dev, param_combinations):
         dump(best_model, best_model_path)
 
         # print("Model save at {}".format(best_model_path))
-    return best_hparams, best_model_path, best_accuracy
+    return best_hparams, best_model_path, best_accuracy, best_model
