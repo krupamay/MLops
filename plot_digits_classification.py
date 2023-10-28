@@ -2,14 +2,15 @@ from utils import predict_and_eval
 from utils import train_test_dev_split, read_digits, preprocess_data, get_hyperparameter_combinations, tune_hparams
 from joblib import dump, load
 import pandas as pd
+import argparse
 
 
-def main():
-    test_sizes = [0.1, 0.2, 0.3]
-    dev_sizes = [0.1, 0.2, 0.3]
+def main(args):
+    test_sizes = [float(x) for x in args.test_sizes.split(",")]
+    dev_sizes = [float(x) for x in args.dev_sizes.split(",")]
     classifier_param_dict = {}
-    gamma_list = [0.001, 0.01, 0.1, 1]
-    C_list = [1, 10, 100, 1000]
+    gamma_list = [float(x) for x in args.gamma_list.split(",")]
+    C_list = [int(x) for x in args.C_list.split(",")]
     h_params_combinations = get_hyperparameter_combinations([gamma_list, C_list], ['gamma', 'C'])
     classifier_param_dict['svm'] = h_params_combinations
     # 2.2 Decision Tree
@@ -71,4 +72,12 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Take parameters from command line.")
+
+    parser.add_argument("--test_sizes", type=str, default="0.1,0.2,0.3", help="Comma separated test sizes.")
+    parser.add_argument("--dev_sizes", type=str, default="0.1,0.2,0.3", help="Comma separated dev sizes.")
+    parser.add_argument("--gamma_list", type=str, default="0.001,0.01,0.1,1", help="Comma separated gamma values.")
+    parser.add_argument("--C_list", type=str, default="1,10,100,1000", help="Comma separated C values.")
+
+    args = parser.parse_args()
+    main(args)
