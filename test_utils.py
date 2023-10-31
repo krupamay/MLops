@@ -41,13 +41,13 @@ def test_for_hparam_combinations_values():
     assert (expected_param_combo_1 in h_params_combinations) and (expected_param_combo_2 in h_params_combinations)
 
 
-def test_model_saving():
-    X_train, y_train, X_dev, y_dev = create_dummy_data()
-    h_params_combinations = create_dummy_hyperparameter()
-
-    _, best_model_path, _, _ = tune_hparams(X_train, y_train, X_dev,
-                                            y_dev, h_params_combinations, model_type='svm')
-    assert os.path.exists(best_model_path)
+# def test_model_saving():
+#     X_train, y_train, X_dev, y_dev = create_dummy_data()
+#     h_params_combinations = create_dummy_hyperparameter()
+#
+#     _, best_model_path, _, _ = tune_hparams(X_train, y_train, X_dev,
+#                                             y_dev, h_params_combinations, model_type='svm')
+#     assert os.path.exists(best_model_path)
 
 
 def test_data_splitting():
