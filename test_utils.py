@@ -51,6 +51,7 @@ def test_model_saving():
 
 
 def test_data_splitting():
+    print("test data splitting")
     X, y = read_digits()
     X = X[:100, :, :]
     y = y[:100]
