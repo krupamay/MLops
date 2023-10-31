@@ -18,11 +18,11 @@ List Down Docker containers : docker ps
 
 
 # Flask App Execution Steps
-export FLASK_APP=app
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
-flak run
+export FLASK_APP=app  
+export LC_ALL=en_US.UTF-8  
+export LANG=en_US.UTF-8  
+flak run  
 
 # Sample CURL POST command 
 curl -X POST -H "Content-Type: application/json" \
--d '{"x": "5", "y": "30"}' http://127.0.0.1:5000/model/predict
+-d '{"x": "5", "y": "30"}' http://127.0.0.1:5000/model/predict  
