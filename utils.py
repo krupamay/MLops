@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from joblib import dump, load
 from sklearn.tree import DecisionTreeClassifier
 from itertools import product
+import os
 
 
 def preprocess_data(data):
@@ -75,6 +76,9 @@ def tune_hparams(X_train, y_train, X_dev, y_dev, param_combinations, model_type)
     best_model_path = ""
     best_model = None
     best_hparams = None
+    models_dir = "./models"
+    if not os.path.exists(models_dir):
+        os.makedirs(models_dir)
     for params in param_combinations:
         # Train model with current hyperparameters
         cur_model = train_model(X_train, y_train, model_params=params, model_type=model_type)
@@ -85,10 +89,10 @@ def tune_hparams(X_train, y_train, X_dev, y_dev, param_combinations, model_type)
             best_accuracy = cur_accuracy
             best_model = cur_model
             best_hparams = params
-            best_model_path = "./models/best_model" + "_".join(
-                ["{}:{}".format(k, v) for k, v in params.items()]) + ".joblib"
+            model_filename = model_type + "_" + "_".join(["{}-{}".format(k, v) for k, v in params.items()]) + ".joblib"
+            best_model_path = os.path.join(models_dir, model_filename)
         # save the best_model
-        # dump(best_model, best_model_path)
+        dump(best_model, best_model_path)
 
         # print("Model save at {}".format(best_model_path))
     return best_hparams, best_model_path, best_accuracy, best_model
