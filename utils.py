@@ -3,7 +3,7 @@ from sklearn.model_selection import train_test_split
 from joblib import dump, load
 from sklearn.tree import DecisionTreeClassifier
 from itertools import product
-
+import os
 
 def preprocess_data(data):
     # flatten the images
@@ -85,6 +85,9 @@ def tune_hparams(X_train, y_train, X_dev, y_dev, param_combinations, model_type)
             best_accuracy = cur_accuracy
             best_model = cur_model
             best_hparams = params
+            models_dir = "./models"
+            if not os.path.exists(models_dir):
+                os.makedirs(models_dir)
             best_model_path = "./models/" + model_type + " : " + "_".join(
                 ["{}:{}".format(k, v) for k, v in params.items()]) + ".joblib"
         # save the best_model
