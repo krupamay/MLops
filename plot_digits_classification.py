@@ -50,7 +50,7 @@ def main(args):
 
                 # 2. Decision Tree
                 model_type = 'tree'
-                print(model_type)
+                # print(model_type)
                 list_hparam_combinations = classifier_param_dict.get('tree')
                 best_hyper_params, best_model_path, best_accuracy, best_model = tune_hparams(X_train, y_train, X_dev,
                                                                                              y_dev,

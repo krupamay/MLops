@@ -85,10 +85,10 @@ def tune_hparams(X_train, y_train, X_dev, y_dev, param_combinations, model_type)
             best_accuracy = cur_accuracy
             best_model = cur_model
             best_hparams = params
-            best_model_path = "./models/best_model" + "_".join(
+            best_model_path = "./models/" + model_type + " : " + "_".join(
                 ["{}:{}".format(k, v) for k, v in params.items()]) + ".joblib"
         # save the best_model
-        # dump(best_model, best_model_path)
+        dump(best_model, best_model_path)
 
         # print("Model save at {}".format(best_model_path))
     return best_hparams, best_model_path, best_accuracy, best_model
