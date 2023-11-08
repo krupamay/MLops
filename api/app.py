@@ -18,7 +18,7 @@ def sum(x, y):
 @app.route('/predict', methods=['POST'])
 def predict():
     # Extract image data from POST request
-    model = load('/Users/krupamayghosal/Documents/IIT Jodhpur Mtech/MLops/updated_code_base/MLops/models/tree_max_depth-5.joblib')
+    model = load('models/tree_max_depth-5.joblib')
     data = request.get_json()
     print(data)
 
