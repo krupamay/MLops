@@ -5,6 +5,11 @@ from joblib import load
 app = Flask(__name__)
 
 
+@app.route('/')
+def hello():
+    return 'Hello, World!'
+
+
 @app.route("/hello/<val>")
 def hello_world(val):
     return "<p>Hello, World!</p>" + val
@@ -18,7 +23,7 @@ def sum(x, y):
 @app.route('/predict', methods=['POST'])
 def predict():
     # Extract image data from POST request
-    model = load('/Users/krupamayghosal/Documents/IIT Jodhpur Mtech/MLops/updated_code_base/MLops/models/tree_max_depth-5.joblib')
+    model = load('models/tree_max_depth-5.joblib')
     data = request.get_json()
     print(data)
 
@@ -40,5 +45,5 @@ def predict():
     return result
 
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5002)
+# if __name__ == '__main__':
+#     app.run(debug=True, host='0.0.0.0')
