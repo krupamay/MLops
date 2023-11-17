@@ -3,5 +3,10 @@ WORKDIR /digits
 COPY . /digits/
 RUN pip3 install --no-cache-dir -r /digits/requirements.txt
 VOLUME ["/digits"]
-CMD ["pytest"]
-CMD ["python", "plot_digits_classification.py", "--test_sizes", "0.1,0.2", "--dev_sizes", "0.1,0.2", "--gamma_list", "0.001,0.01,0.1", "--C_list", "1,10,100"]
+
+
+ENV FLASK_APP=api/app
+CMD ["flask", "run", "--host=0.0.0.0"]
+
+#CMD ["pytest"]
+#CMD ["python", "plot_digits_classification.py", "--test_sizes", "0.1,0.2", "--dev_sizes", "0.1,0.2", "--gamma_list", "0.001,0.01,0.1", "--C_list", "1,10,100"]
