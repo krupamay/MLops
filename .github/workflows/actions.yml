@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run:  pip3 install --no-cache-dir -r requirements.txt
       - name: Execute main python file
-        run: python plot_digits_classification.py  --test_sizes 0.1,0.2 --dev_sizes 0.1,0.2 --gamma_list 0.001,0.01,0.1 --C_list 1,10,100
+        run: python plot_digits_classification.py
       - name: Run unit test cases
         run: pytest
       - name: Completion
