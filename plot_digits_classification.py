@@ -31,7 +31,7 @@ def main(args):
                 # 1. SVM
 
                 model_type = 'svm'
-                print(model_type)
+                # print(model_type)
                 list_hparam_combinations = classifier_param_dict.get('svm')
                 best_hyper_params, best_model_path, best_accuracy, best_model = tune_hparams(X_train, y_train, X_dev,
                                                                                              y_dev,

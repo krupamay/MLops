@@ -20,9 +20,9 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - name: Install dependencies
         run:  pip3 install --no-cache-dir -r requirements.txt
-      - name: Run unit test cases
-        run: pytest
       - name: Execute main python file
         run: python plot_digits_classification.py  --test_sizes 0.1,0.2 --dev_sizes 0.1,0.2 --gamma_list 0.001,0.01,0.1 --C_list 1,10,100
+      - name: Run unit test cases
+        run: pytest
       - name: Completion
         run: echo "Python File execution completed"
