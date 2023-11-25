@@ -26,3 +26,6 @@ flak run
 # Sample CURL POST command 
 curl -X POST -H "Content-Type: application/json" \
 -d '{"x": "5", "y": "30"}' http://127.0.0.1:5000/model/predict  
+
+
+

@@ -1,4 +1,4 @@
-name: Python Code Execution for Digits Classification
+name: Python Code Execution for Digits Classifications
 on: [push]
 jobs:
   Explore-GitHub-Actions:
