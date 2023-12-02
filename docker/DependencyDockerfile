@@ -1,0 +1,4 @@
+FROM python:3.9.17
+WORKDIR /digits
+COPY . /digits/
+RUN pip3 install --no-cache-dir -r /digits/requirements.txt
