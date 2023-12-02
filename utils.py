@@ -2,6 +2,8 @@ from sklearn import datasets, svm, metrics, tree
 from sklearn.model_selection import train_test_split
 from joblib import dump, load
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import Normalizer
 from itertools import product
 import os
 
@@ -10,6 +12,8 @@ def preprocess_data(data):
     # flatten the images
     n = len(data)
     data = data.reshape((n, -1))
+    normalizer = Normalizer()
+    data = normalizer.fit_transform(data)
     return data
 
 
@@ -35,6 +39,8 @@ def train_model(X_train, y_train, model_params, model_type):
         clf = svm.SVC
     if model_type == 'tree':
         clf = tree.DecisionTreeClassifier
+    elif model_type == 'lr':
+        clf = LogisticRegression
     model = clf(**model_params)
     # print(model_params)
     model.fit(X_train, y_train)
@@ -82,6 +88,7 @@ def tune_hparams(X_train, y_train, X_dev, y_dev, param_combinations, model_type)
     for params in param_combinations:
         # Train model with current hyperparameters
         cur_model = train_model(X_train, y_train, model_params=params, model_type=model_type)
+
         # Evaluate the model on the development set
         cur_accuracy = predict_and_eval(cur_model, X_dev, y_dev)
         # Select the hyperparameters that yield the best performance on DEV set

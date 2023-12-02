@@ -20,14 +20,26 @@ def sum(x, y):
     return str(int(x) + int(y))
 
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    # Extract image data from POST request
+def load_model():
+    svm = load('models/svm_gamma-0.1_C-100.joblib')
+    tree = load('models/tree_max_depth-5.joblib')
+    lr = load('models/M22AIE211_lr_sag.joblib')
+    models_dict = {'svm': svm, 'tree': tree, 'lr': lr}
+    return models_dict
+
+
+models = load_model()
+
+
+@app.route('/predict/<model_type>', methods=['POST'])
+def predict(model_type):
     try:
-        model = load('models/svm_gamma-0.001_C-10.joblib')
+        if model_type not in ['svm', 'tree', 'lr']:
+            return jsonify({'error': 'Invalid model type'}), 400
+        model = models.get(model_type)
         data = request.get_json()
         # print(data)
-
+        # Extract image data from POST request
         image1 = data['image']
         # image2 = data['image2']
         image1 = list(map(float, image1))
@@ -47,7 +59,6 @@ def predict():
     except Exception as e:
         print(e)
         return jsonify({'error': 'An error occurred during prediction.'}), 500
-
 
 # if __name__ == '__main__':
 #     app.run(debug=True, host='0.0.0.0')

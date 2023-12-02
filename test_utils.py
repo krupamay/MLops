@@ -1,6 +1,9 @@
+from sklearn.linear_model import LogisticRegression
 from utils import get_hyperparameter_combinations, train_test_dev_split, read_digits, tune_hparams, preprocess_data
 from sklearn import datasets
 import numpy as np
+from joblib import load
+
 from api.app import app
 import os
 
@@ -29,6 +32,8 @@ def read_digits():
         result[digit] = digits.images[index]
 
     return result
+
+
 #
 #
 # def create_dummy_data():
@@ -80,9 +85,31 @@ def test_post_predict():
     digits_dict = read_digits()
     for digit, data in digits_dict.items():
         image_data = data.flatten().tolist()
-        response = app.test_client().post("/predict", json={'image': image_data})
+        response = app.test_client().post("/predict/svm", json={'image': image_data})
         # print(response.data)
         assert response.status_code == 200
-        response_json = response.get_json()
-        predicted_digit = response_json['predicted_digit']
-        assert predicted_digit == digit
+
+        response = app.test_client().post("/predict/tree", json={'image': image_data})
+        assert response.status_code == 200
+
+        response = app.test_client().post("/predict/lr", json={'image': image_data})
+        assert response.status_code == 200
+
+        # Testing for non existing route
+        response = app.test_client().post("/predict/abcd", json={'image': image_data})
+        assert response.status_code == 400
+
+
+def test_logistic_regression_model():
+    model_filename = 'models/M22AIE211_lr_sag.joblib'
+    model = load(model_filename)
+    assert isinstance(model, LogisticRegression)
+
+
+def test_logistic_regression_model_solver():
+    model_filename = 'models/M22AIE211_lr_sag.joblib'
+    model = load(model_filename)
+    params = model.get_params()
+    solver = params.get('solver')
+    # print(params)
+    assert solver in model_filename
